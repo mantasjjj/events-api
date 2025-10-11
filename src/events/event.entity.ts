@@ -1,40 +1,52 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity('events')
 export class Event {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ length: 255 })
+  @Column({ type: 'text', nullable: false })
   title: string;
 
-  @Column('text', { nullable: true })
-  description: string;
+  @Column({ name: 'start_time', type: 'text', nullable: true })
+  startTime?: string;
 
-  @Column({ length: 100, nullable: true })
-  category: string;
+  @Column({ name: 'end_time', type: 'timestamp', nullable: true })
+  endTime?: Date;
 
-  @Column({ length: 255, nullable: true })
-  location: string;
+  @Column({ name: 'timezone', type: 'timestamp', nullable: true })
+  timezone?: Date;
 
-  @Column({ type: 'timestamp' })
-  startDate: Date;
+  @Column({ name: 'venue_name', type: 'text', nullable: true })
+  venueName?: string;
 
-  @Column({ type: 'timestamp', nullable: true })
-  endDate: Date;
+  @Column({ type: 'text', nullable: true })
+  address?: string;
 
-  @Column({ default: true })
-  isActive: boolean;
+  @Column({ type: 'text', nullable: true })
+  city?: string;
 
-  @CreateDateColumn()
-  createdAt: Date;
+  @Column({ type: 'text', nullable: true })
+  lat?: string;
 
-  @UpdateDateColumn()
-  updatedAt: Date;
+  @Column({ type: 'text', nullable: true })
+  lng?: string;
+
+  @Column({ type: 'text', nullable: true })
+  description?: string;
+
+  @Column({ name: 'image_url', type: 'text', nullable: true })
+  imageUrl?: string;
+
+  @Column({ name: 'price', type: 'numeric', nullable: true })
+  price?: number;
+
+  @Column({ name: 'organizer_name', type: 'text', nullable: true })
+  organizerName?: string;
+
+  @Column({ type: 'text', nullable: true })
+  category?: string;
+
+  @Column({ type: 'bool', nullable: true })
+  free?: boolean;
 }

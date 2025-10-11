@@ -28,28 +28,31 @@ export class EventsService {
     }
 
     if (filters.location) {
-      query.andWhere('event.location ILIKE :location', {
-        location: `%${filters.location}%`,
-      });
+      query.andWhere(
+        '(event.city ILIKE :location OR event.address ILIKE :location)',
+        {
+          location: `%${filters.location}%`,
+        },
+      );
     }
 
     if (filters.startDate) {
-      query.andWhere('event.startDate >= :startDate', {
+      query.andWhere('event.startTime >= :startDate', {
         startDate: filters.startDate,
       });
     }
 
     if (filters.endDate) {
-      query.andWhere('event.endDate <= :endDate', { endDate: filters.endDate });
+      query.andWhere('event.endTime <= :endDate', { endDate: filters.endDate });
     }
 
     if (filters.isActive !== undefined) {
-      query.andWhere('event.isActive = :isActive', {
+      query.andWhere('event.free = :isActive', {
         isActive: filters.isActive,
       });
     }
 
-    return query.orderBy('event.startDate', 'ASC').getMany();
+    return query.orderBy('event.startTime', 'ASC').getMany();
   }
 
   async findOne(id: number): Promise<Event> {
