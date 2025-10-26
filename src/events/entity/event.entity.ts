@@ -8,6 +8,14 @@ export class Event {
   @Column({ type: 'text', nullable: false })
   title: string;
 
+  @Column({
+    name: 'popularity_counter',
+    type: 'numeric',
+    nullable: false,
+    default: 0,
+  })
+  popularityCounter: number;
+
   @Column({ name: 'start_time', type: 'text', nullable: true })
   startTime?: string;
 
@@ -47,6 +55,6 @@ export class Event {
   @Column({ type: 'text', nullable: true })
   category?: string;
 
-  @Column({ type: 'bool', nullable: true })
-  free?: boolean;
+  @Column({ name: 'ticket_url', type: 'text', nullable: true })
+  tickerUrl?: string;
 }
