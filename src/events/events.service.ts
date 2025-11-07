@@ -4,19 +4,7 @@ import { Repository } from 'typeorm';
 import { Event } from './entity/event.entity';
 import { PaginatedEventResponse } from './response/event.response';
 import { EventMapper } from './mapper/event.mapper';
-
-export interface EventFilters {
-  category?: string;
-  location?: string;
-  startDate?: string;
-  endDate?: string;
-  isActive?: boolean;
-  search?: string;
-  page?: number;
-  pageSize?: number;
-  orderBy?: 'startTime' | 'popularityCounter' | 'price';
-  hideExpired?: boolean;
-}
+import { EventFiltersDto } from './dto/event-filters.dto';
 
 @Injectable()
 export class EventsService {
@@ -25,7 +13,9 @@ export class EventsService {
     private eventsRepository: Repository<Event>,
   ) {}
 
-  async findAll(filters: EventFilters = {}): Promise<PaginatedEventResponse> {
+  async findAll(
+    filters: EventFiltersDto = {},
+  ): Promise<PaginatedEventResponse> {
     const page = filters.page || 1;
     const pageSize = filters.pageSize || 10;
     const skip = (page - 1) * pageSize;
