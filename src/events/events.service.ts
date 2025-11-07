@@ -69,7 +69,7 @@ export class EventsService {
       });
     }
 
-    // todo: Add these once we have correct startTime data
+    // TODO: Add these once we have correct startTime data
     // if (filters.hideExpired !== false) {
     //   const today = new Date().toISOString().split('T')[0];
     //   query.andWhere('DATE(event.startTime) >= :today', { today });
