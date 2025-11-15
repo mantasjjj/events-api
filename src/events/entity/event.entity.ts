@@ -46,8 +46,11 @@ export class Event {
   @Column({ name: 'image_url', type: 'text', nullable: true })
   imageUrl?: string;
 
-  @Column({ name: 'price', type: 'numeric', nullable: true })
-  price?: number;
+  @Column({ name: 'price_from', type: 'numeric', nullable: true })
+  priceFrom?: number;
+
+  @Column({ name: 'price_to', type: 'numeric', nullable: true })
+  priceTo?: number;
 
   @Column({ name: 'organizer_name', type: 'text', nullable: true })
   organizerName?: string;
@@ -57,4 +60,7 @@ export class Event {
 
   @Column({ name: 'ticket_url', type: 'text', nullable: true })
   tickerUrl?: string;
+
+  @Column({ name: 'ticket_purchase_note', type: 'text', nullable: true })
+  ticketPurchaseNote?: string;
 }

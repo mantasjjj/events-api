@@ -17,10 +17,12 @@ export class EventMapper {
     eventResponse.lng = event.lng;
     eventResponse.description = event.description;
     eventResponse.imageUrl = event.imageUrl;
-    eventResponse.price = event.price;
+    eventResponse.priceFrom = event.priceFrom;
+    eventResponse.priceTo = event.priceTo;
     eventResponse.organizerName = event.organizerName;
     eventResponse.category = event.category;
     eventResponse.ticketUrl = event.tickerUrl;
+    eventResponse.ticketPurchaseNote = event.ticketPurchaseNote;
     eventResponse.free = !event.tickerUrl;
 
     return eventResponse;

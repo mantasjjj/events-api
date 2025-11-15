@@ -40,8 +40,11 @@ export class EventResponse {
   @ApiProperty({ description: 'Event image URL', required: false })
   imageUrl?: string;
 
-  @ApiProperty({ description: 'Event price', required: false })
-  price?: number;
+  @ApiProperty({ description: 'Event price from', required: false })
+  priceFrom?: number;
+
+  @ApiProperty({ description: 'Event price to', required: false })
+  priceTo?: number;
 
   @ApiProperty({ description: 'Organizer name', required: false })
   organizerName?: string;
@@ -51,6 +54,9 @@ export class EventResponse {
 
   @ApiProperty({ description: 'Ticket purchase URL', required: false })
   ticketUrl?: string;
+
+  @ApiProperty({ description: 'Ticket purchase note', required: false })
+  ticketPurchaseNote?: string;
 
   @ApiProperty({ description: 'Whether the event is free' })
   free: boolean;
