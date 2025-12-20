@@ -11,7 +11,7 @@ export class EventResponse {
   popularityCounter: number;
 
   @ApiProperty({ description: 'Event start time', required: false })
-  startTime?: string;
+  startTime?: Date;
 
   @ApiProperty({ description: 'Event end time', required: false })
   endTime?: Date;
@@ -54,6 +54,9 @@ export class EventResponse {
 
   @ApiProperty({ description: 'Ticket purchase URL', required: false })
   ticketUrl?: string;
+
+  @ApiProperty({ description: 'Source URL', required: false })
+  sourceUrl?: string;
 
   @ApiProperty({ description: 'Ticket purchase note', required: false })
   ticketPurchaseNote?: string;

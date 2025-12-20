@@ -9,9 +9,8 @@ export class EventMapper {
     eventResponse.popularityCounter = event.popularityCounter;
     eventResponse.startTime = event.startTime;
     eventResponse.endTime = event.endTime;
-    eventResponse.timezone = event.timezone;
     eventResponse.venueName = event.venueName;
-    eventResponse.address = event.address;
+    eventResponse.address = event.address || event.venueName;
     eventResponse.city = event.city;
     eventResponse.lat = event.lat;
     eventResponse.lng = event.lng;
@@ -22,8 +21,13 @@ export class EventMapper {
     eventResponse.organizerName = event.organizerName;
     eventResponse.category = event.category;
     eventResponse.ticketUrl = event.tickerUrl;
+    eventResponse.sourceUrl = event.sourceUrl;
     eventResponse.ticketPurchaseNote = event.ticketPurchaseNote;
-    eventResponse.free = !event.tickerUrl;
+    eventResponse.free =
+      !event.priceFrom &&
+      !event.priceTo &&
+      !event.tickerUrl &&
+      !event.ticketPurchaseNote;
 
     return eventResponse;
   }

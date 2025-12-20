@@ -59,21 +59,39 @@ export class EventsService {
       });
     }
 
-    // TODO: Add these once we have correct startTime data
-    // if (filters.hideExpired !== false) {
-    //   const today = new Date().toISOString().split('T')[0];
-    //   query.andWhere('DATE(event.startTime) >= :today', { today });
-    // }
-    //
-    // const orderByColumn = filters.orderBy || 'startTime';
-    // const orderByMap = {
-    //   startTime: 'event.startTime',
-    //   title: 'event.title',
-    //   popularityCounter: 'event.popularityCounter',
-    //   price: 'event.price',
-    // };
-    //
-    // query.orderBy(orderByMap[orderByColumn], 'DESC');
+    if (filters.hideExpired === 'true') {
+      const today = new Date().toISOString().split('T')[0];
+      query.andWhere('DATE(event.startTime) >= :today', { today });
+    }
+
+    if (filters.priceFrom !== undefined) {
+      query.andWhere('event.priceFrom >= :priceFrom', {
+        priceFrom: filters.priceFrom,
+      });
+    }
+
+    if (filters.priceTo !== undefined) {
+      query.andWhere('event.priceFrom <= :priceTo', {
+        priceTo: filters.priceTo,
+      });
+    }
+
+    if (filters.free === 'true') {
+      query.andWhere(
+        'event.tickerUrl IS NULL AND event.priceFrom IS NULL AND event.priceTo IS NULL AND event.ticketPurchaseNote IS NULL',
+      );
+    }
+
+    const orderByColumn = filters.orderBy || 'startTime';
+    const orderDirection = filters.orderDirection || 'DESC';
+    const orderByMap = {
+      startTime: 'event.startTime',
+      title: 'event.title',
+      popularityCounter: 'event.popularityCounter',
+      price: 'event.priceFrom',
+    };
+
+    query.orderBy(orderByMap[orderByColumn], orderDirection);
 
     const events = await query.skip(skip).take(pageSize).getMany();
 

@@ -32,11 +32,31 @@ export class EventFiltersDto {
   @IsString()
   endDate?: string;
 
+  @ApiProperty({ description: 'Filter by price from minimum', required: false })
+  @IsOptional()
+  @Transform(({ value }) => parseFloat(value))
+  @IsNumber()
+  priceFrom?: number;
+
+  @ApiProperty({ description: 'Filter by price to maximum', required: false })
+  @IsOptional()
+  @Transform(({ value }) => parseFloat(value))
+  @IsNumber()
+  priceTo?: number;
+
   @ApiProperty({ description: 'Filter by active status', required: false })
   @IsOptional()
   @Transform(({ value }) => value === 'true')
   @IsBoolean()
   isActive?: boolean;
+
+  @ApiProperty({
+    description: 'Filter for free events (no ticket info)',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  free?: string;
 
   @ApiProperty({ description: 'Search in event titles', required: false })
   @IsOptional()
@@ -72,9 +92,18 @@ export class EventFiltersDto {
   @IsIn(['startTime', 'popularityCounter', 'price'])
   orderBy?: 'startTime' | 'popularityCounter' | 'price';
 
+  @ApiProperty({
+    description: 'Order direction',
+    required: false,
+    enum: ['ASC', 'DESC'],
+    default: 'DESC',
+  })
+  @IsOptional()
+  @IsIn(['ASC', 'DESC'])
+  orderDirection?: 'ASC' | 'DESC';
+
   @ApiProperty({ description: 'Hide expired events', required: false })
   @IsOptional()
-  @Transform(({ value }) => value === 'true')
-  @IsBoolean()
-  hideExpired?: boolean;
+  @IsString()
+  hideExpired?: string;
 }

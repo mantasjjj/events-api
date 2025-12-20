@@ -16,14 +16,11 @@ export class Event {
   })
   popularityCounter: number;
 
-  @Column({ name: 'start_time', type: 'text', nullable: true })
-  startTime?: string;
+  @Column({ name: 'start_time', type: 'timestamp', nullable: true })
+  startTime?: Date;
 
   @Column({ name: 'end_time', type: 'timestamp', nullable: true })
   endTime?: Date;
-
-  @Column({ name: 'timezone', type: 'timestamp', nullable: true })
-  timezone?: Date;
 
   @Column({ name: 'venue_name', type: 'text', nullable: true })
   venueName?: string;
@@ -61,6 +58,12 @@ export class Event {
   @Column({ name: 'ticket_url', type: 'text', nullable: true })
   tickerUrl?: string;
 
+  @Column({ name: 'source_url', type: 'text', nullable: true })
+  sourceUrl?: string;
+
   @Column({ name: 'ticket_purchase_note', type: 'text', nullable: true })
   ticketPurchaseNote?: string;
+
+  @Column({ name: 'dedup_key', type: 'text', nullable: true })
+  dedupKey?: string;
 }
