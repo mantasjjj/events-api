@@ -38,19 +38,21 @@ export class EventsService {
     }
 
     if (filters.startDate) {
-      query.andWhere('event.startTime >= :startDate', {
-        startDate: filters.startDate,
-      });
+      query.andWhere(
+        '(event.startTime >= :startDate OR event.startTime IS NULL)',
+        {
+          startDate: filters.startDate,
+        },
+      );
     }
 
     if (filters.endDate) {
-      query.andWhere('event.endTime <= :endDate', { endDate: filters.endDate });
-    }
-
-    if (filters.isActive !== undefined) {
-      query.andWhere('event.free = :isActive', {
-        isActive: filters.isActive,
-      });
+      query.andWhere(
+        '(event.startTime <= :endDate OR event.startTime IS NULL)',
+        {
+          endDate: filters.endDate,
+        },
+      );
     }
 
     if (filters.search) {
@@ -65,13 +67,22 @@ export class EventsService {
     }
 
     if (filters.priceFrom !== undefined) {
-      query.andWhere('event.priceFrom >= :priceFrom', {
-        priceFrom: filters.priceFrom,
-      });
+      if (filters.priceFrom === 0) {
+        query.andWhere(
+          '(event.tickerUrl IS NULL AND event.priceFrom IS NULL AND event.priceTo IS NULL AND event.ticketPurchaseNote IS NULL) OR (COALESCE(event.priceFrom, 0) >= :priceFrom)',
+          {
+            priceFrom: filters.priceFrom,
+          },
+        );
+      } else {
+        query.andWhere('COALESCE(event.priceFrom, 0) >= :priceFrom', {
+          priceFrom: filters.priceFrom,
+        });
+      }
     }
 
     if (filters.priceTo !== undefined) {
-      query.andWhere('event.priceFrom <= :priceTo', {
+      query.andWhere('COALESCE(event.priceFrom, 0) <= :priceTo', {
         priceTo: filters.priceTo,
       });
     }
@@ -88,7 +99,7 @@ export class EventsService {
       startTime: 'event.startTime',
       title: 'event.title',
       popularityCounter: 'event.popularityCounter',
-      price: 'event.priceFrom',
+      price: 'COALESCE(event.priceFrom, 0)',
     };
 
     query.orderBy(orderByMap[orderByColumn], orderDirection);
