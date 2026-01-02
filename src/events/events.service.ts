@@ -29,12 +29,28 @@ export class EventsService {
     }
 
     if (filters.location) {
-      query.andWhere(
-        '(event.city ILIKE :location OR event.address ILIKE :location)',
-        {
-          location: `%${filters.location}%`,
-        },
-      );
+      const locations = Array.isArray(filters.location)
+        ? filters.location
+        : (filters.location as string)
+            .split(',')
+            .map((loc) => loc.trim())
+            .filter((loc) => loc.length > 0);
+
+      if (locations.length > 0) {
+        const locationConditions = locations
+          .map(
+            (_, index) =>
+              `(event.city ILIKE :location${index} OR event.address ILIKE :location${index})`,
+          )
+          .join(' OR ');
+
+        const locationParams = {};
+        locations.forEach((loc, index) => {
+          locationParams[`location${index}`] = `%${loc}%`;
+        });
+
+        query.andWhere(`(${locationConditions})`, locationParams);
+      }
     }
 
     if (filters.startDate) {
@@ -47,10 +63,12 @@ export class EventsService {
     }
 
     if (filters.endDate) {
+      const endOfDay = new Date(filters.endDate);
+      endOfDay.setHours(23, 59, 59, 999);
       query.andWhere(
         '(event.startTime <= :endDate OR event.startTime IS NULL)',
         {
-          endDate: filters.endDate,
+          endDate: endOfDay,
         },
       );
     }
@@ -104,7 +122,10 @@ export class EventsService {
 
     query.orderBy(orderByMap[orderByColumn], orderDirection);
 
-    const events = await query.skip(skip).take(pageSize).getMany();
+    const [events, total] = await query
+      .skip(skip)
+      .take(pageSize)
+      .getManyAndCount();
 
     const eventResponses = EventMapper.toEventResponseArray(events);
 
@@ -112,6 +133,7 @@ export class EventsService {
       data: eventResponses,
       page,
       pageSize,
+      total,
     };
   }
 

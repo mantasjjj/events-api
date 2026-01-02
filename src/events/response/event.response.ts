@@ -74,4 +74,7 @@ export class PaginatedEventResponse {
 
   @ApiProperty({ description: 'Number of items per page' })
   pageSize: number;
+
+  @ApiProperty({ description: 'Total number of items' })
+  total: number;
 }

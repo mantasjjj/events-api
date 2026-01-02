@@ -6,6 +6,7 @@ import {
   IsBoolean,
   IsNumber,
   IsIn,
+  IsArray,
 } from 'class-validator';
 
 export class EventFiltersDto {
@@ -15,12 +16,24 @@ export class EventFiltersDto {
   category?: string;
 
   @ApiProperty({
-    description: 'Filter by location (city or address)',
+    description:
+      'Filter by locations (cities or addresses). Can be a single string or comma-separated values.',
     required: false,
+    example: 'Vilnius,Kaunas',
   })
   @IsOptional()
-  @IsString()
-  location?: string;
+  @Transform(({ value }) => {
+    if (typeof value === 'string') {
+      return value
+        .split(',')
+        .map((loc) => loc.trim())
+        .filter((loc) => loc.length > 0);
+    }
+    return value;
+  })
+  @IsArray()
+  @IsString({ each: true })
+  location?: string[];
 
   @ApiProperty({ description: 'Filter by start date', required: false })
   @IsOptional()
