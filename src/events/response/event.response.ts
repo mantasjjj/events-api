@@ -29,10 +29,10 @@ export class EventResponse {
   city?: string;
 
   @ApiProperty({ description: 'Latitude coordinate', required: false })
-  lat?: string;
+  lat?: number;
 
   @ApiProperty({ description: 'Longitude coordinate', required: false })
-  lng?: string;
+  lng?: number;
 
   @ApiProperty({ description: 'Event description', required: false })
   description?: string;

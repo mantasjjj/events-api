@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity('events')
 export class Event {
@@ -31,11 +37,11 @@ export class Event {
   @Column({ type: 'text', nullable: true })
   city?: string;
 
-  @Column({ type: 'text', nullable: true })
-  lat?: string;
+  @Column({ type: 'numeric', nullable: true })
+  lat?: number;
 
-  @Column({ type: 'text', nullable: true })
-  lng?: string;
+  @Column({ type: 'numeric', nullable: true })
+  lng?: number;
 
   @Column({ type: 'text', nullable: true })
   description?: string;
@@ -66,4 +72,10 @@ export class Event {
 
   @Column({ name: 'dedup_key', type: 'text', nullable: true })
   dedupKey?: string;
+
+  @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ name: 'updated_at', type: 'timestamp' })
+  updatedAt: Date;
 }
