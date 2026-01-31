@@ -49,6 +49,9 @@ export class Event {
   @Column({ name: 'image_url', type: 'text', nullable: true })
   imageUrl?: string;
 
+  @Column({ name: 'image_url_stored', type: 'text', nullable: true })
+  imageUrlStored?: string;
+
   @Column({ name: 'price_from', type: 'numeric', nullable: true })
   priceFrom?: number;
 
