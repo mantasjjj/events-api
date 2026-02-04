@@ -120,7 +120,18 @@ export class EventsService {
       price: 'COALESCE(event.priceFrom, 0)',
     };
 
-    query.orderBy(orderByMap[orderByColumn], orderDirection);
+    if (orderByColumn === 'price') {
+      // First order by: push events with priceFrom=null AND not free to the end
+      query.addOrderBy(
+        `CASE WHEN event.priceFrom IS NULL AND NOT (event.tickerUrl IS NULL AND event.priceFrom IS NULL AND event.priceTo IS NULL AND event.ticketPurchaseNote IS NULL) THEN 1 ELSE 0 END`,
+        'ASC',
+      );
+
+      // Then order regularly
+      query.addOrderBy(orderByMap[orderByColumn], orderDirection);
+    } else {
+      query.orderBy(orderByMap[orderByColumn], orderDirection);
+    }
 
     const [events, total] = await query
       .skip(skip)
