@@ -15,9 +15,9 @@ export class EventMapper {
     eventResponse.lat = event.lat;
     eventResponse.lng = event.lng;
     eventResponse.description = event.description;
-    eventResponse.imageUrl = event.imageUrl
-      ? event.imageUrl
-      : event.imageUrlStored;
+    eventResponse.imageUrl = event.imageUrlStored
+      ? event.imageUrlStored
+      : event.imageUrl;
     eventResponse.priceFrom = event.priceFrom;
     eventResponse.priceTo = event.priceTo;
     eventResponse.organizerName = event.organizerName;
