@@ -121,7 +121,16 @@ export class EventsService {
     };
 
     if (orderByColumn === 'price') {
-      // First order by: push events with priceFrom=null AND not free to the end
+      // When sorting DESC (highest to lowest), push free events to the bottom
+      // When sorting ASC (lowest to highest), free events naturally appear at top
+      if (orderDirection === 'DESC') {
+        query.addOrderBy(
+          `CASE WHEN event.tickerUrl IS NULL AND event.priceFrom IS NULL AND event.priceTo IS NULL AND event.ticketPurchaseNote IS NULL THEN 1 ELSE 0 END`,
+          'ASC',
+        );
+      }
+
+      // Push events with priceFrom=null AND not free to the end
       query.addOrderBy(
         `CASE WHEN event.priceFrom IS NULL AND NOT (event.tickerUrl IS NULL AND event.priceFrom IS NULL AND event.priceTo IS NULL AND event.ticketPurchaseNote IS NULL) THEN 1 ELSE 0 END`,
         'ASC',
