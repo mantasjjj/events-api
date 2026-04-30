@@ -74,7 +74,7 @@ export class EventsService {
     }
 
     if (filters.search) {
-      query.andWhere('event.title ILIKE :search', {
+      query.andWhere('unaccent(event.title) ILIKE unaccent(:search)', {
         search: `%${filters.search}%`,
       });
     }
