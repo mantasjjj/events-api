@@ -121,8 +121,9 @@ export class EventsService {
     };
 
     if (orderByColumn === 'price') {
-      // Handle free events: push to bottom for DESC, push to top for ASC
-      query.addOrderBy(
+      // When sorting DESC (highest to lowest), push free events to the bottom
+      // When sorting ASC (lowest to highest), push free events to the top
+      query.orderBy(
         `CASE WHEN event.tickerUrl IS NULL AND event.priceFrom IS NULL AND event.priceTo IS NULL AND event.ticketPurchaseNote IS NULL THEN 1 ELSE 0 END`,
         orderDirection === 'DESC' ? 'ASC' : 'DESC',
       );
