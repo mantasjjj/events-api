@@ -121,11 +121,17 @@ export class EventsService {
     };
 
     if (orderByColumn === 'price') {
-      // When sorting DESC (highest to lowest), push free events to the bottom
-      // When sorting ASC (lowest to highest), push free events to the top
+      const hasPriceFilter =
+        filters.priceFrom !== undefined || filters.priceTo !== undefined;
+
+      // When price filter is active, always push free events to the bottom
+      // When no price filter: DESC pushes free to bottom, ASC pushes free to top
+      const freeEventsSortDirection =
+        hasPriceFilter || orderDirection === 'DESC' ? 'ASC' : 'DESC';
+
       query.orderBy(
         `CASE WHEN event.tickerUrl IS NULL AND event.priceFrom IS NULL AND event.priceTo IS NULL AND event.ticketPurchaseNote IS NULL THEN 1 ELSE 0 END`,
-        orderDirection === 'DESC' ? 'ASC' : 'DESC',
+        freeEventsSortDirection,
       );
 
       // Push events with priceFrom=null AND not free to the end
