@@ -129,26 +129,31 @@ export class EventsService {
     };
 
     if (orderByColumn === 'price') {
-      const hasPriceFilter =
-        filters.priceFrom !== undefined || filters.priceTo !== undefined;
+      if (orderDirection === 'ASC') {
+        // ASC: Free first (0), then priceFrom=0 (1), then others by price (2), unknown price last (3)
+        query.orderBy(
+          `CASE
+            WHEN event.tickerUrl IS NULL AND event.priceFrom IS NULL AND event.priceTo IS NULL AND event.ticketPurchaseNote IS NULL THEN 0
+            WHEN event.priceFrom = 0 THEN 1
+            WHEN event.priceFrom IS NULL THEN 3
+            ELSE 2
+          END`,
+          'ASC',
+        );
+      } else {
+        // DESC: Others by price first (0), then priceFrom=0 (1), free last (2), unknown price at end (3)
+        query.orderBy(
+          `CASE
+            WHEN event.tickerUrl IS NULL AND event.priceFrom IS NULL AND event.priceTo IS NULL AND event.ticketPurchaseNote IS NULL THEN 2
+            WHEN event.priceFrom = 0 THEN 1
+            WHEN event.priceFrom IS NULL THEN 3
+            ELSE 0
+          END`,
+          'ASC',
+        );
+      }
 
-      // When price filter is active, always push free events to the bottom
-      // When no price filter: DESC pushes free to bottom, ASC pushes free to top
-      const freeEventsSortDirection =
-        hasPriceFilter || orderDirection === 'DESC' ? 'ASC' : 'DESC';
-
-      query.orderBy(
-        `CASE WHEN event.tickerUrl IS NULL AND event.priceFrom IS NULL AND event.priceTo IS NULL AND event.ticketPurchaseNote IS NULL THEN 1 ELSE 0 END`,
-        freeEventsSortDirection,
-      );
-
-      // Push events with priceFrom=null AND not free to the end
-      query.addOrderBy(
-        `CASE WHEN event.priceFrom IS NULL AND NOT (event.tickerUrl IS NULL AND event.priceFrom IS NULL AND event.priceTo IS NULL AND event.ticketPurchaseNote IS NULL) THEN 1 ELSE 0 END`,
-        'ASC',
-      );
-
-      // Then order by price
+      // Then order by price within each group
       query.addOrderBy(orderByMap[orderByColumn], orderDirection);
     } else {
       query.orderBy(orderByMap[orderByColumn], orderDirection);
