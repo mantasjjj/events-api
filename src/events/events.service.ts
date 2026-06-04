@@ -100,9 +100,17 @@ export class EventsService {
     }
 
     if (filters.priceTo !== undefined) {
-      query.andWhere('COALESCE(event.priceFrom, 0) <= :priceTo', {
-        priceTo: filters.priceTo,
-      });
+      if (filters.priceFrom === 0) {
+        // Include free events when filtering from price 0
+        query.andWhere(
+          '(event.tickerUrl IS NULL AND event.priceFrom IS NULL AND event.priceTo IS NULL AND event.ticketPurchaseNote IS NULL) OR (COALESCE(event.priceFrom, 0) <= :priceTo)',
+          { priceTo: filters.priceTo },
+        );
+      } else {
+        query.andWhere('COALESCE(event.priceFrom, 0) <= :priceTo', {
+          priceTo: filters.priceTo,
+        });
+      }
     }
 
     if (filters.free === 'true') {
