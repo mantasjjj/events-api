@@ -87,9 +87,10 @@ export class EventsService {
     if (filters.priceFrom !== undefined) {
       if (filters.priceFrom === 0) {
         query.andWhere(
-          '(event.tickerUrl IS NULL AND event.priceFrom IS NULL AND event.priceTo IS NULL AND event.ticketPurchaseNote IS NULL) OR (COALESCE(event.priceFrom, 0) >= :priceFrom)',
+          '(event.tickerUrl IS NULL AND event.priceFrom IS NULL AND event.priceTo IS NULL AND event.ticketPurchaseNote IS NULL AND (event.description IS NULL OR event.description NOT ILIKE :kaina)) OR (COALESCE(event.priceFrom, 0) >= :priceFrom)',
           {
             priceFrom: filters.priceFrom,
+            kaina: '%kaina%',
           },
         );
       } else {
@@ -103,8 +104,8 @@ export class EventsService {
       if (filters.priceFrom === 0) {
         // Include free events when filtering from price 0
         query.andWhere(
-          '(event.tickerUrl IS NULL AND event.priceFrom IS NULL AND event.priceTo IS NULL AND event.ticketPurchaseNote IS NULL) OR (COALESCE(event.priceFrom, 0) <= :priceTo)',
-          { priceTo: filters.priceTo },
+          '(event.tickerUrl IS NULL AND event.priceFrom IS NULL AND event.priceTo IS NULL AND event.ticketPurchaseNote IS NULL AND (event.description IS NULL OR event.description NOT ILIKE :kaina)) OR (COALESCE(event.priceFrom, 0) <= :priceTo)',
+          { priceTo: filters.priceTo, kaina: '%kaina%' },
         );
       } else {
         query.andWhere('COALESCE(event.priceFrom, 0) <= :priceTo', {
@@ -115,7 +116,8 @@ export class EventsService {
 
     if (filters.free === 'true') {
       query.andWhere(
-        'event.tickerUrl IS NULL AND event.priceFrom IS NULL AND event.priceTo IS NULL AND event.ticketPurchaseNote IS NULL',
+        'event.tickerUrl IS NULL AND event.priceFrom IS NULL AND event.priceTo IS NULL AND event.ticketPurchaseNote IS NULL AND (event.description IS NULL OR event.description NOT ILIKE :kaina)',
+        { kaina: '%kaina%' },
       );
     }
 
@@ -138,13 +140,13 @@ export class EventsService {
         hasPriceFilter || orderDirection === 'DESC' ? 'ASC' : 'DESC';
 
       query.orderBy(
-        `CASE WHEN event.tickerUrl IS NULL AND event.priceFrom IS NULL AND event.priceTo IS NULL AND event.ticketPurchaseNote IS NULL THEN 1 ELSE 0 END`,
+        `CASE WHEN event.tickerUrl IS NULL AND event.priceFrom IS NULL AND event.priceTo IS NULL AND event.ticketPurchaseNote IS NULL AND (event.description IS NULL OR event.description NOT ILIKE '%kaina%') THEN 1 ELSE 0 END`,
         freeEventsSortDirection,
       );
 
       // Push events with priceFrom=null AND not free to the end
       query.addOrderBy(
-        `CASE WHEN event.priceFrom IS NULL AND NOT (event.tickerUrl IS NULL AND event.priceFrom IS NULL AND event.priceTo IS NULL AND event.ticketPurchaseNote IS NULL) THEN 1 ELSE 0 END`,
+        `CASE WHEN event.priceFrom IS NULL AND NOT (event.tickerUrl IS NULL AND event.priceFrom IS NULL AND event.priceTo IS NULL AND event.ticketPurchaseNote IS NULL AND (event.description IS NULL OR event.description NOT ILIKE '%kaina%')) THEN 1 ELSE 0 END`,
         'ASC',
       );
 

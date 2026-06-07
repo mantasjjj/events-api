@@ -25,11 +25,15 @@ export class EventMapper {
     eventResponse.ticketUrl = event.tickerUrl;
     eventResponse.sourceUrl = event.sourceUrl;
     eventResponse.ticketPurchaseNote = event.ticketPurchaseNote;
+    const descriptionContainsKaina = event.description
+      ?.toLowerCase()
+      .includes('kaina');
     eventResponse.free =
       !event.priceFrom &&
       !event.priceTo &&
       !event.tickerUrl &&
-      !event.ticketPurchaseNote;
+      !event.ticketPurchaseNote &&
+      !descriptionContainsKaina;
 
     return eventResponse;
   }
